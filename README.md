@@ -1,6 +1,6 @@
 # Ana’s Baby — aplicativo mobile
 
-Primeira etapa do trabalho: **somente a tela de login**, em React Native + Expo + TypeScript, para Android e iOS. A prévia web serve para conferir a interface no computador.
+Aplicativo React Native + Expo + TypeScript para Android e iOS. Etapa atual: cadastro e login por e-mail e senha com Supabase Auth, para usar a mesma conta em vários aparelhos. A prévia web serve para conferir a interface no computador.
 
 ## O que está pronto
 
@@ -8,23 +8,25 @@ Primeira etapa do trabalho: **somente a tela de login**, em React Native + Expo 
 - Ilustrações vetoriais originais de roupas infantis. Sem bonecas, fotos de bebês ou imagens externas.
 - E-mail e senha, exibição/ocultação da senha, validação e mensagens acessíveis.
 - Rolagem, área segura e tratamento do teclado para telas pequenas.
-- Estado de carregamento e prevenção de envio duplicado para a integração futura.
+- Login, cadastro com confirmação de senha, confirmação de e-mail quando exigida pelo servidor e área Minha conta com logout.
+- Sessão renovada automaticamente e persistida com AES-GCM no celular, com a chave protegida pelo SecureStore.
+- Estado de carregamento, erros em português e prevenção de envio duplicado.
 - Testes automatizados do formulário e configuração TypeScript estrita.
 
 **Esta etapa é de interface.** Nenhuma senha é salva ou enviada, nenhum usuário é autenticado. Entrar, criar conta e recuperar senha informam que o acesso estará disponível em breve. `LoginScreen` aceita uma função assíncrona `onLogin` para a futura integração.
 
 ## Executar
 
-Requer Node.js 22 ou superior e pnpm 11.25.0 (`npm install -g pnpm@11.25.0`).
+Requer Node.js 24 LTS (ou 22.13.0+) e pnpm 11.25.0 (`npm install -g pnpm@11.25.0`).
 
 ```sh
-git clone -b feat/tela-login https://github.com/Huttas/Trabalho-Faculdade-programa-o-para-dispositivos-m-veis-em-android.git
+git clone -b feat/login-cadastro https://github.com/Huttas/Trabalho-Faculdade-programa-o-para-dispositivos-m-veis-em-android.git
 cd Trabalho-Faculdade-programa-o-para-dispositivos-m-veis-em-android
 pnpm install --frozen-lockfile
 pnpm start
 ```
 
-Abra o projeto com uma versão do Expo Go compatível com o SDK 58 no Android ou iPhone. Celular e computador precisam estar na mesma rede. No Windows, o iOS pode ser conferido em um iPhone físico; o simulador iOS exige macOS/Xcode.
+Abra o projeto com uma versão do Expo Go compatível com o SDK 58 no Android ou iPhone. No iPhone, entre com a mesma conta Expo no Expo Go e na CLI (pnpm exec expo login). Celular e computador precisam estar na mesma rede. No Windows, o iOS pode ser conferido em um iPhone físico; o simulador iOS exige macOS/Xcode.
 
 ```sh
 pnpm web           # prévia no navegador

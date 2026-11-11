@@ -1,5 +1,5 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": { "strict": true, "types": ["react", "jest"] },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "dist-*"]
 }
