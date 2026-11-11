@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Ana's Baby • Moda infantil",
+    "slug": "ana-baby-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFF9F6",
+    "ios": { "supportsTablet": true },
+    "android": { "edgeToEdgeEnabled": true },
+    "web": { "bundler": "metro", "name": "Ana's Baby • Login" }
+  }
+}
