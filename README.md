@@ -13,7 +13,11 @@ Aplicativo React Native + Expo + TypeScript para Android e iOS. Etapa atual: cad
 - Estado de carregamento, erros em português e prevenção de envio duplicado.
 - Testes automatizados do formulário e configuração TypeScript estrita.
 
-**Esta etapa é de interface.** Nenhuma senha é salva ou enviada, nenhum usuário é autenticado. Entrar, criar conta e recuperar senha informam que o acesso estará disponível em breve. `LoginScreen` aceita uma função assíncrona `onLogin` para a futura integração.
+As senhas são enviadas somente por HTTPS ao Supabase Auth, que faz a verificação no servidor. O app não grava senhas. No Android/iOS, somente a sessão é persistida de forma cifrada. Na prévia web a sessão fica em memória e é encerrada ao recarregar a página.
+
+A configuração pública do projeto fica em `src/auth/publicConfig.ts`: somente a URL e a chave publishable, próprias para distribuição em aplicativos. Não contém senha do banco nem chave secret/service_role. Para usar outro projeto, copie `.env.example` para `.env`, preencha os valores públicos e reinicie o Expo.
+
+O cadastro imediato sem confirmação de e-mail está habilitado para a apresentação, conforme autorizado. Antes de usar com clientes reais, configure SMTP e confirmação de e-mail. Veja [os detalhes da autenticação](docs/AUTENTICACAO.md).
 
 ## Executar
 
@@ -41,12 +45,14 @@ pnpm export:web    # compilação da prévia web
 - `src/screens/LoginScreen.tsx`: tela e comportamento do formulário.
 - `src/components/`: ícones e ilustração originais.
 - `src/theme.ts`: paleta e tipografia.
-- `__tests__/LoginScreen.test.tsx`: casos automatizados.
+- `src/auth/`: integração Supabase e persistência cifrada da sessão.
+- `src/AuthApp.tsx`: navegação, restauração e renovação da sessão.
+- `__tests__/`: testes de login, cadastro, navegação, integração e criptografia da sessão.
 - `docs/PROGRESSO.md`: histórico e próximas etapas do trabalho.
 
 ## Branches
 
-Esta etapa fica em `feat/tela-login`. A `main` fica preservada até a revisão/integração. Para uma etapa posterior, primeiro use como base a versão mais recente aprovada e crie uma branch com o nome da funcionalidade, por exemplo `feat/autenticacao` ou `feat/cadastro`. Commits registram o progresso de cada etapa, sem sobrescrever as anteriores.
+Esta etapa fica em `feat/login-cadastro`. A etapa inicial permanece em `feat/tela-login`. A `main` fica preservada até a revisão/integração. Para uma etapa posterior, primeiro use como base a versão mais recente aprovada e crie uma branch com o nome da funcionalidade. Commits registram o progresso de cada etapa, sem sobrescrever as anteriores.
 
 ## Referências técnicas
 
