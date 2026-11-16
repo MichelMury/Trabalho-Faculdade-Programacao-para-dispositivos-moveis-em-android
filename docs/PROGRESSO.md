@@ -1,5 +1,15 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `fix/iphone-crypto-nativo`
+
+O novo teste no iPhone continuou atingindo o limite de 30 segundos tanto no login quanto no cadastro. A atualização anterior corrigiu a liberação de tarefas, mas não resolveu a lentidão do PBKDF2 no Hermes desse aparelho.
+
+Substituído o cálculo em JavaScript pelo WebCrypto. No iPhone, uma WebView local usa o motor WebKit; no Android, o motor Chromium. O componente é fornecido pelo Expo Go. O HTML é estático, não carrega páginas externas e bloqueia conexões com CSP; a senha não é enviada pela rede. Na web, WebCrypto é chamado diretamente.
+
+Mantidos PBKDF2 HMAC SHA256, 600 mil iterações, salt e formato do cadastro anterior. Nenhuma conta foi apagada. A biblioteca @noble/hashes foi removida. Foram acrescentados testes do script real com WebCrypto, da comunicação do host nativo e da falha do processo.
+
+Validação local: 14 testes aprovados em 5 arquivos, TypeScript e exportação web/Android/iOS concluídos. A WebView nativa é simulada nos testes; a confirmação final no iPhone depende de nova tentativa do aluno. A correção anterior está mantida no histórico, mas não deve ser descrita como solução confirmada no aparelho.
+
 ## 16/11/2026 — `fix/login-expo-go`
 
 Após relato de carregamento contínuo no Expo Go, a inspeção da biblioteca @noble/hashes 2.0.1 mostrou que a função de yield usava apenas microtarefas. Atualização para 2.4.0, que libera o agendador de tarefas e permite que timers e renderização avancem durante o PBKDF2. Mantidos algoritmo, 600 mil iterações, salt e formato dos cadastros anteriores.

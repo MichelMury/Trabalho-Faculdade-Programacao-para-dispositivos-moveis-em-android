@@ -1,12 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getRandomBytesAsync } from 'expo-crypto';
 import { AUTH_TIMEOUT_MS, login, register } from '../src/services/auth';
+import { deriveWithWebCrypto, installPasswordDeriver } from '../src/services/passwordCrypto';
+
+const { webcrypto } = require('node:crypto');
+beforeAll(() => { installPasswordDeriver((password, salt, iterations) => deriveWithWebCrypto(webcrypto.subtle, password, salt, iterations)); });
 
 jest.mock('expo-crypto', () => ({ getRandomBytesAsync: jest.fn() }));
 
 test('CT01 cadastro persiste hash e salt, rejeita senha errada e permite entrar novamente', async () => {
   await AsyncStorage.clear();
-  // Só a fonte nativa de aleatoriedade é substituída: PBKDF2 executa de verdade.
+  // Aleatoriedade e armazenamento são simulados; PBKDF2 executa no WebCrypto real do Node.
   jest.mocked(getRandomBytesAsync).mockResolvedValueOnce(new Uint8Array(16).fill(1)).mockResolvedValueOnce(new Uint8Array(16).fill(2));
   const password = 'Senha de teste 123';
   let timerRanDuringHash = false;

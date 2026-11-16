@@ -7,6 +7,7 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { ProductScreen } from './src/screens/ProductScreen';
 import { login, register, type Customer } from './src/services/auth';
 import type { Product } from './src/data/products';
+import { PasswordCryptoHost } from './src/components/PasswordCryptoHost';
 
 export default function App() {
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -19,7 +20,7 @@ export default function App() {
     });
     return () => listener.remove();
   }, [selected]);
-  return <SafeAreaProvider><StatusBar style="dark" />{
+  return <SafeAreaProvider><StatusBar style="dark" /><PasswordCryptoHost />{
     !customer ? <LoginScreen onLogin={async ({ email, password }) => setCustomer(await login(email, password))} onRegister={async ({ email, password }) => setCustomer(await register(email, password))} />
       : selected ? <ProductScreen key={selected.id} product={selected} onBack={() => setSelected(null)} />
         : <HomeScreen onSelect={setSelected} onLogout={() => { setSelected(null); setCustomer(null); }} />

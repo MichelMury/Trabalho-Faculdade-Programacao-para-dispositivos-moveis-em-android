@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import App from '../App';
 import { login } from '../src/services/auth';
 
+jest.mock('../src/components/PasswordCryptoHost', () => ({ PasswordCryptoHost: () => null }));
+
 jest.mock('../src/services/auth', () => ({
   login: jest.fn().mockResolvedValue({ email: 'michel@exemplo.com' }),
   register: jest.fn(),

@@ -1,8 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getRandomBytesAsync } from 'expo-crypto';
-import { pbkdf2Async } from '@noble/hashes/pbkdf2.js';
-import { sha256 } from '@noble/hashes/sha2.js';
-import { bytesToHex, hexToBytes, utf8ToBytes } from '@noble/hashes/utils.js';
+import { derivePassword, PasswordCryptoError } from './passwordCrypto';
 
 const ITERATIONS = 600_000;
 export const AUTH_TIMEOUT_MS = 30_000;
@@ -30,10 +28,12 @@ async function withDeadline<T>(operation: (ensureActive: () => void) => Promise<
 
 async function derive(password: string, salt: string, iterations: number) {
   if (pendingDerivation) throw new AuthError('Uma verificação ainda está terminando. Aguarde alguns segundos e tente novamente.');
-  pendingDerivation = pbkdf2Async(sha256, utf8ToBytes(password), hexToBytes(salt), {
-    c: iterations, dkLen: 32, asyncTick: 10,
-  }).then(bytesToHex);
+  pendingDerivation = derivePassword(password, salt, iterations);
   try { return await pendingDerivation; }
+  catch (error) {
+    if (error instanceof PasswordCryptoError) throw new AuthError(error.message);
+    throw new AuthError('Não foi possível verificar a senha neste aparelho. Tente abrir o app novamente.');
+  }
   finally { pendingDerivation = null; }
 }
 
@@ -44,7 +44,7 @@ export async function register(email: string, password: string): Promise<Custome
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new AuthError('Digite um e-mail válido.');
     if (password.length < 8 || password.length > 128) throw new AuthError('Use uma senha de 8 a 128 caracteres.');
     if (await AsyncStorage.getItem(keyFor(email))) throw new AuthError('Este e-mail já tem cadastro neste aparelho. Entre na sua conta.');
-    const salt = bytesToHex(await getRandomBytesAsync(16));
+    const salt = Array.from(await getRandomBytesAsync(16), byte => byte.toString(16).padStart(2, '0')).join('');
     ensureActive();
     const account: Account = { version: 1, email, salt, hash: await derive(password, salt, ITERATIONS), iterations: ITERATIONS };
     ensureActive();
