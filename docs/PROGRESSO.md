@@ -1,5 +1,9 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `fix/textos-da-loja`
+
+A pedido de Michel, removidos os avisos de demonstração da home, das descrições das roupas e da mensagem do WhatsApp. Mantidos os dados do pedido, endereço, preços, aviso de frete e confirmação com a loja. Os produtos e preços cadastrados não foram alterados nem validados como catálogo real da empresa.
+
 ## 16/11/2026 — `feat/endereco-entrega`
 
 Formulário de entrega acrescentado aos detalhes do produto: nome do recebedor, CEP, rua, número, complemento opcional, bairro, cidade e UF. Validação dos campos obrigatórios, formato do CEP e sigla de estado antes de abrir o WhatsApp. Aceita s/n para endereço sem número. O CEP não é consultado em serviço externo e a validação não comprova a existência física do endereço.

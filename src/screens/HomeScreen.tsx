@@ -16,7 +16,7 @@ export function HomeScreen({ onSelect, onLogout }: { onSelect: (product: Product
       ListHeaderComponent={<>
         <StoreHeader onLogout={onLogout} />
         <View style={s.hero}><Text style={s.eyebrow}>BEM-VINDO À NOSSA LOJINHA</Text><Text accessibilityRole="header" style={s.title}>Carinho em cada detalhe.</Text><Text style={s.subtitle}>Roupinhas para acompanhar os pequenos momentos.</Text><ClothingIllustration /></View>
-        <View style={s.section}><Text accessibilityRole="header" style={s.sectionTitle}>Encontre seu carinho favorito</Text><Text style={s.hint}>Catálogo de demonstração · peças e preços ilustrativos</Text>
+        <View style={s.section}><Text accessibilityRole="header" style={s.sectionTitle}>Encontre seu carinho favorito</Text>
           <View style={s.filters}>{categories.map(item => <Pressable key={item} accessibilityRole="button" accessibilityLabel={`Filtrar ${item}`} accessibilityState={{ selected: category === item }} onPress={() => setCategory(item)} style={[s.chip, category === item && s.selected]}><Text style={[s.chipText, category === item && s.selectedText]}>{item}</Text></Pressable>)}</View>
         </View>
       </>}

@@ -25,7 +25,6 @@ export function buildOrderUrl(product: Product, size: string, quantity: number, 
     `Cidade: ${address.city} - ${address.state}`,
     `CEP: ${address.postalCode}`,
     '',
-    'Pedido de demonstração do aplicativo acadêmico.',
     'Frete não incluído. Confirmar disponibilidade, entrega e pagamento com a loja.',
   ].join('\n');
   return `https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(message)}`;
