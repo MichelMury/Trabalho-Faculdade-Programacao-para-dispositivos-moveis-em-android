@@ -8,7 +8,7 @@ Substituído o cálculo em JavaScript pelo WebCrypto. No iPhone, uma WebView loc
 
 Mantidos PBKDF2 HMAC SHA256, 600 mil iterações, salt e formato do cadastro anterior. Nenhuma conta foi apagada. A biblioteca @noble/hashes foi removida. Foram acrescentados testes do script real com WebCrypto, da comunicação do host nativo e da falha do processo.
 
-Validação local: 14 testes aprovados em 5 arquivos, TypeScript e exportação web/Android/iOS concluídos. A WebView nativa é simulada nos testes; a confirmação final no iPhone depende de nova tentativa do aluno. A correção anterior está mantida no histórico, mas não deve ser descrita como solução confirmada no aparelho.
+Validação local: 14 testes aprovados em 5 arquivos, TypeScript e exportação web/Android/iOS concluídos. A WebView nativa é simulada nos testes. Após reabrir a prévia atualizada, Michel confirmou que o acesso funcionou no iPhone. Essa confirmação cobre o fluxo de acesso; não comprova envio do pedido no WhatsApp ou testes completos de todos os recursos no aparelho. A correção anterior está mantida no histórico, mas não deve ser descrita como solução confirmada no aparelho.
 
 ## 16/11/2026 — `fix/login-expo-go`
 
