@@ -1,5 +1,13 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `feat/endereco-entrega`
+
+Formulário de entrega acrescentado aos detalhes do produto: nome do recebedor, CEP, rua, número, complemento opcional, bairro, cidade e UF. Validação dos campos obrigatórios, formato do CEP e sigla de estado antes de abrir o WhatsApp. Aceita s/n para endereço sem número. O CEP não é consultado em serviço externo e a validação não comprova a existência física do endereço.
+
+A mensagem do pedido inclui o endereço junto com peça, tamanho, quantidade, preço unitário e total. O cliente confere a mensagem e confirma o envio no WhatsApp. Frete, disponibilidade e prazo permanecem a combinar com a loja. O formulário não efetua cobrança nem agenda entrega automaticamente. O endereço fica apenas na memória da tela, sem persistência adicional.
+
+Incluído tratamento do teclado no iPhone e navegação entre campos. Testes: CT03 ampliado para exigir endereço e conferir a mensagem; CT08 e CT09 cobrem dados inválidos, complemento opcional, endereço acentuado e número s/n. Validação local: 16 testes aprovados em 6 arquivos, TypeScript e exportação web/Android/iOS concluídos. Fluxo de endereço ainda não confirmado em aparelho real.
+
 ## 16/11/2026 — `fix/iphone-crypto-nativo`
 
 O novo teste no iPhone continuou atingindo o limite de 30 segundos tanto no login quanto no cadastro. A atualização anterior corrigiu a liberação de tarefas, mas não resolveu a lentidão do PBKDF2 no Hermes desse aparelho.

@@ -5,7 +5,7 @@ O aplicativo está em desenvolvimento. Os testes documentam as funcionalidades i
 ## Onde ver o resultado no GitHub
 
 1. Abra a aba **Actions** do repositório.
-2. Selecione **Testes automatizados** e a execução da branch `fix/iphone-crypto-nativo`.
+2. Selecione **Testes automatizados** e a execução da branch `feat/endereco-entrega`.
 3. Na página **Summary**, confira a tabela com os nomes dos testes e o resultado. Esse é um bom local para tirar o print do relatório.
 4. Para ver o terminal, abra **Testes e compilacao**, depois **Executar testes**.
 5. Em **Artifacts**, baixe `resultado-testes` para obter o resultado em JSON.
@@ -18,15 +18,15 @@ Uma execução verde comprova que as verificações daquela versão passaram. Um
 | --- | --- | --- |
 | CT01 | Cadastro normaliza e-mail, persiste salt e hash sem senha em texto puro, diferencia hashes para a mesma senha, rejeita senha incorreta e aceita a correta. Também rejeita duplicidade e senha curta. | `__tests__/Auth.test.tsx` |
 | CT02 | Login abre home com FlatList, filtro mostra somente a categoria escolhida, produto abre detalhes, voltar retorna à home e sair limpa a sessão. | `__tests__/App.test.tsx` |
-| CT03 | Compra exige tamanho, respeita quantidade mínima, calcula 2 × R$ 39,90 = R$ 79,80 e abre o número da loja com mensagem correta. Falha ao abrir mostra aviso. | `__tests__/ProductScreen.test.tsx` |
-
+| CT03 | Compra exige endereço e tamanho, respeita quantidade mínima, calcula 2 × R$ 39,90 = R$ 79,80 e abre o número da loja com mensagem correta. Falha ao abrir mostra aviso. | `__tests__/ProductScreen.test.tsx` |
 | CT04 | Operação local que não responde exibe erro após 30 segundos e não aceita uma conclusão atrasada como login bem-sucedido. | `__tests__/Auth.test.tsx` |
-
 | CT05 | Script de cálculo local usa WebCrypto e gera o mesmo PBKDF2 do cadastro anterior, sem senha na resposta. | `__tests__/PasswordCrypto.test.tsx` |
 | CT06 | Host encaminha a requisição e recebe o hash; bloqueia navegação externa. | `__tests__/PasswordCrypto.test.tsx` |
 | CT07 | Encerramento do processo de cálculo rejeita a operação pendente. | `__tests__/PasswordCrypto.test.tsx` |
+| CT08 | Endereço incompleto, CEP incorreto e UF inexistente bloqueiam o pedido. | `__tests__/Delivery.test.tsx` |
+| CT09 | Complemento opcional, número s/n e endereço acentuado são incluídos corretamente no pedido. | `__tests__/Delivery.test.tsx` |
 
-Os sete testes anteriores do formulário de login foram preservados. Total após a implementação WebCrypto: quatorze testes.
+Os sete testes anteriores do formulário de login foram preservados. Total após o formulário de entrega: dezesseis testes.
 
 ## Executar no computador
 
@@ -38,7 +38,7 @@ node scripts/test-summary.cjs
 pnpm exec expo export --platform all --output-dir dist-ci
 ```
 
-O terminal mostra `Tests: 14 passed, 14 total` quando todos passam. O JSON também pode ser usado para gerar o resumo. O teste de hash pode demorar, pois calcula PBKDF2 com 600 mil iterações de verdade.
+O terminal mostra `Tests: 16 passed, 16 total` quando todos passam. O JSON também pode ser usado para gerar o resumo. O teste de hash pode demorar, pois calcula PBKDF2 com 600 mil iterações de verdade.
 
 ## Limites da verificação
 
@@ -50,6 +50,6 @@ Exportar bundles Android/iOS não gera APK/IPA nem comprova execução em aparel
 
 ## Texto que pode ser adaptado no relatório
 
-Foram implementados três novos casos de teste automatizado com Jest e React Native Testing Library. Eles verificam o cadastro e o login local com senha protegida por hash, a navegação entre as telas e a montagem do pedido para o WhatsApp. O caso de compra verifica o tamanho selecionado, a quantidade, o preço unitário e o valor total. A integração externa é simulada para que os testes não enviem mensagens. Os testes anteriores do formulário também foram mantidos, totalizando quatorze casos após incluir as regressões de tempo limite e os testes do motor WebCrypto. Os resultados podem ser consultados na aba Actions do GitHub.
+Foram implementados três novos casos de teste automatizado com Jest e React Native Testing Library. Eles verificam o cadastro e o login local com senha protegida por hash, a navegação entre as telas e a montagem do pedido para o WhatsApp. O caso de compra verifica o tamanho selecionado, a quantidade, o preço unitário e o valor total. A integração externa é simulada para que os testes não enviem mensagens. Os testes anteriores do formulário também foram mantidos, totalizando dezesseis casos após incluir as regressões de tempo limite, os testes do motor WebCrypto e a validação do endereço. Os resultados podem ser consultados na aba Actions do GitHub.
 
 Os CT01 e CT05 executam WebCrypto real no Node. Os CT06 e CT07 simulam a WebView nativa para testar a comunicação. Michel confirmou manualmente que o acesso funcionou no iPhone após a atualização. Os testes automatizados não comprovam execução física nem medem o tempo de login no aparelho; a confirmação manual também não substitui testar os demais recursos.

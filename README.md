@@ -21,17 +21,17 @@ Aplicativo acadêmico de venda de roupas infantis, desenvolvido por Michel Santo
 Use Node.js 24 LTS e pnpm 11.25.0.
 
 ```sh
-git clone -b fix/iphone-crypto-nativo https://github.com/MichelMury/Trabalho-Faculdade-Programacao-para-dispositivos-moveis-em-android.git
+git clone -b feat/endereco-entrega https://github.com/MichelMury/Trabalho-Faculdade-Programacao-para-dispositivos-moveis-em-android.git
 cd Trabalho-Faculdade-Programacao-para-dispositivos-moveis-em-android
 pnpm install --frozen-lockfile
 pnpm start
 ```
 
-Abra em um Expo Go compatível com o SDK 58. Computador e celular devem estar na mesma rede. Para conferir no navegador, execute `pnpm web`.
+Abra em um Expo Go compatível com o SDK 58. Com o modo LAN, computador e celular devem estar na mesma rede. Para usar redes diferentes, execute `pnpm start --tunnel` e escaneie o QR code gerado. Para conferir no navegador, execute `pnpm web`.
 
 Na primeira visita, toque em **Criar uma conta**, informe e-mail e senha de 8 a 128 caracteres. Após cadastrar, a home abre. Use **Sair** para voltar e testar o login com o mesmo cadastro. A conta fica somente neste aparelho ou navegador; limpar os dados do aplicativo remove o cadastro. A sessão fica em memória, então fechar e abrir exige entrar novamente. A recuperação de senha ainda não está disponível.
 
-Na home, escolha uma roupa. Nos detalhes, selecione tamanho e quantidade e toque em **Comprar pelo WhatsApp**. O número configurado é `55 21 98967-0373`. A mensagem inclui peça, tamanho, quantidade, preço unitário e total das peças. A pessoa confirma o envio no WhatsApp. O frete não entra no total.
+Na home, escolha uma roupa. Nos detalhes, selecione tamanho e quantidade, preencha o endereço de entrega e toque em **Comprar pelo WhatsApp**. São obrigatórios nome do recebedor, CEP, rua, número (ou s/n), bairro, cidade e UF. O complemento é opcional. O número configurado é `55 21 98967-0373`. A mensagem inclui peça, tamanho, quantidade, preço unitário, total das peças e endereço de entrega. O endereço fica apenas na memória da tela; a loja recebe esses dados quando o cliente confirma o envio no WhatsApp. A pessoa confirma o envio no WhatsApp. O frete não entra no total.
 
 ## Como os dados são guardados
 
@@ -48,7 +48,7 @@ node scripts/test-summary.cjs
 pnpm exec expo export --platform all --output-dir dist-ci
 ```
 
-Na aba **Actions**, abra **Testes automatizados** e uma execução da branch `fix/iphone-crypto-nativo`. O **Summary** mostra a tabela de resultados. O passo **Executar testes** mostra a saída do Jest. O guia [docs/TESTES.md](docs/TESTES.md) explica os três casos e quais prints usar no relatório.
+Na aba **Actions**, abra **Testes automatizados** e uma execução da branch `feat/endereco-entrega`. O **Summary** mostra a tabela de resultados. O passo **Executar testes** mostra a saída do Jest. O guia [docs/TESTES.md](docs/TESTES.md) explica os três casos e quais prints usar no relatório.
 
 Os testes não enviam mensagens. A compilação exporta bundles web, Android e iOS; não gera APK/IPA e não substitui teste em celular real.
 
@@ -58,7 +58,7 @@ Os testes não enviam mensagens. A compilação exporta bundles web, Android e i
 - `feat/home-catalogo-whatsapp`: home, detalhes e integração do pedido.
 - `test/requisitos-relatorio`: testes, automação e documentação; contém as etapas anteriores.
 
-As branches são sequenciais: a última reúne o trabalho desta entrega. A correção atual está em `fix/iphone-crypto-nativo`, baseada na entrega completa. A `main` permanece como estava, aguardando revisão. O histórico está em [docs/PROGRESSO.md](docs/PROGRESSO.md).
+As branches são sequenciais: a última reúne o trabalho desta entrega. A versão atual está em `feat/endereco-entrega`, baseada na entrega completa. A `main` permanece como estava, aguardando revisão. O histórico está em [docs/PROGRESSO.md](docs/PROGRESSO.md).
 
 ## Ajustar para os produtos reais
 
