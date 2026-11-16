@@ -1,5 +1,15 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `feat/home-catalogo-whatsapp`
+
+- Login e cadastro conectados à home; sair retorna ao login e limpa a sessão em memória.
+- Home com FlatList de duas colunas, filtros de categoria e ilustrações originais de roupas.
+- Terceira tela com detalhes, seleção de tamanho, quantidade e cálculo em centavos.
+- Integração via Linking com WhatsApp 55 21 98967 0373. Abre mensagem com peça, tamanho, quantidade, preço unitário e total. O cliente confirma o envio.
+- Voltar pelo botão da tela ou botão físico do Android retorna ao catálogo.
+
+Produtos e preços são de demonstração. Fotos, estoque, frete, pagamento e confirmação automática de venda não foram integrados. A mensagem identifica a demonstração e orienta confirmar entrega e disponibilidade. Não há envio automático de mensagens.
+
 ## 16/11/2026 — `feat/autenticacao-local`
 
 Cadastro e verificação local de contas com PBKDF2 HMAC SHA256, 600 mil iterações e salt aleatório de 16 bytes por conta. Persistência com AsyncStorage de e-mail, salt e hash; a senha não é armazenada. Cadastro acessível pela própria tela de login. Integração de navegação na próxima etapa.
