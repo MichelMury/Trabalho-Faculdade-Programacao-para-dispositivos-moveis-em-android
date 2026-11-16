@@ -1,5 +1,11 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `feat/autenticacao-local`
+
+Cadastro e verificação local de contas com PBKDF2 HMAC SHA256, 600 mil iterações e salt aleatório de 16 bytes por conta. Persistência com AsyncStorage de e-mail, salt e hash; a senha não é armazenada. Cadastro acessível pela própria tela de login. Integração de navegação na próxima etapa.
+
+Este é um cadastro acadêmico no aparelho, sem servidor, sessão persistente ou recuperação de senha. Não equivale a uma autenticação de produção nem sincroniza contas entre dispositivos. Hash de senha não é criptografia reversível. Para uma loja real, será necessário serviço de autenticação e controle de acesso no servidor.
+
 ## 11/11/2026 — `feat/tela-login`
 
 Escopo confirmado: criar somente a tela de login, mantendo o restante do aplicativo para os próximos dias.

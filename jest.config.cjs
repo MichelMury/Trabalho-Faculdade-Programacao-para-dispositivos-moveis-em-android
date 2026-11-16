@@ -4,4 +4,5 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.test.tsx'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   collectCoverageFrom: ['src/screens/**/*.tsx'],
+  transformIgnorePatterns: ['node_modules/(?!\\.pnpm/|react-native/|@react-native/|@react-native-community/|expo[^/]*/|@expo/|react-native-[^/]*/|@noble/)'],
 };

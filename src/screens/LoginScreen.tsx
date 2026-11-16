@@ -4,11 +4,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ClothingIllustration } from '../components/ClothingIllustration';
 import { Icon } from '../components/Icon';
 import { colors, serif } from '../theme';
+import { AuthError } from '../services/auth';
 
 export type LoginCredentials = { email: string; password: string };
-type Props = { onLogin?: (credentials: LoginCredentials) => Promise<void> };
+type Props = {
+  onLogin?: (credentials: LoginCredentials) => Promise<void>;
+  onRegister?: (credentials: LoginCredentials) => Promise<void>;
+};
 
-export function LoginScreen({ onLogin }: Props) {
+export function LoginScreen({ onLogin, onRegister }: Props) {
+  const [registering, setRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
@@ -25,19 +30,21 @@ export function LoginScreen({ onLogin }: Props) {
     const nextErrors: typeof errors = {};
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) nextErrors.email = 'Digite um e-mail válido.';
     if (!password) nextErrors.password = 'Digite sua senha.';
+    if (registering && (password.length < 8 || password.length > 128)) nextErrors.password = 'Use uma senha de 8 a 128 caracteres.';
     setErrors(nextErrors);
     setNotice('');
     if (Object.keys(nextErrors).length) return;
-    if (!onLogin) {
+    const action = registering ? onRegister : onLogin;
+    if (!action) {
       setNotice('O acesso à conta estará disponível em breve.');
       return;
     }
     inFlight.current = true;
     setBusy(true);
     try {
-      await onLogin({ email: normalizedEmail, password });
-    } catch {
-      setNotice('Não foi possível entrar. Confira seus dados e tente novamente.');
+      await action({ email: normalizedEmail, password });
+    } catch (error) {
+      setNotice(error instanceof AuthError ? error.message : 'Não foi possível entrar. Confira seus dados e tente novamente.');
     } finally {
       inFlight.current = false;
       setBusy(false);
@@ -63,7 +70,8 @@ export function LoginScreen({ onLogin }: Props) {
                 <Text style={s.subtitle}>Pequenas roupinhas. Grandes momentos.</Text>
               </View>
               <View style={s.form}>
-                <Text style={s.formTitle}>Entre na sua conta</Text>
+                <Text style={s.formTitle}>{registering ? 'Crie sua conta' : 'Entre na sua conta'}</Text>
+                {onRegister && <Text style={s.accountHint}>Seu cadastro fica salvo neste aparelho. Use uma senha exclusiva para este projeto.</Text>}
                 <Text style={s.label}>E-mail</Text>
                 <View style={[s.inputBox, focused === 'email' && s.focus, !!errors.email && s.invalid]}>
                   <Icon name="mail" />
@@ -72,19 +80,22 @@ export function LoginScreen({ onLogin }: Props) {
                 {!!errors.email && <Text accessibilityRole="alert" style={s.error}>{errors.email}</Text>}
                 <View style={s.passwordLabel}>
                   <Text style={s.label}>Senha</Text>
-                  <Pressable accessibilityRole="button" disabled={busy} onPress={() => setNotice('A recuperação de senha estará disponível em breve.')} hitSlop={8}><Text style={s.link}>Esqueceu a senha?</Text></Pressable>
+                  {!registering && <Pressable accessibilityRole="button" disabled={busy} onPress={() => setNotice(onRegister ? 'O cadastro é local. A recuperação de senha ainda não está disponível.' : 'A recuperação de senha estará disponível em breve.')} hitSlop={8}><Text style={s.link}>Esqueceu a senha?</Text></Pressable>}
                 </View>
                 <View style={[s.inputBox, focused === 'password' && s.focus, !!errors.password && s.invalid]}>
                   <Icon name="lock" />
-                  <TextInput ref={passwordInput} accessibilityLabel="Senha" style={s.input} placeholder="Digite sua senha" placeholderTextColor="#A08E98" value={password} onChangeText={value => { setPassword(value); setErrors(old => ({ ...old, password: undefined })); setNotice(''); }} onFocus={() => setFocused('password')} onBlur={() => setFocused(null)} secureTextEntry={!visible} autoCapitalize="none" autoCorrect={false} autoComplete="current-password" textContentType="password" returnKeyType="go" onSubmitEditing={submit} editable={!busy} />
+                  <TextInput ref={passwordInput} accessibilityLabel="Senha" style={s.input} placeholder={registering ? 'Crie uma senha com pelo menos 8 caracteres' : 'Digite sua senha'} placeholderTextColor="#A08E98" value={password} onChangeText={value => { setPassword(value); setErrors(old => ({ ...old, password: undefined })); setNotice(''); }} onFocus={() => setFocused('password')} onBlur={() => setFocused(null)} secureTextEntry={!visible} autoCapitalize="none" autoCorrect={false} autoComplete={registering ? 'new-password' : 'current-password'} textContentType={registering ? 'newPassword' : 'password'} returnKeyType="go" onSubmitEditing={submit} editable={!busy} maxLength={128} />
                   <Pressable style={s.eye} accessibilityRole="button" accessibilityLabel={visible ? 'Ocultar senha' : 'Mostrar senha'} onPress={() => setVisible(old => !old)} disabled={busy}><Icon name={visible ? 'eye-off' : 'eye'} /></Pressable>
                 </View>
                 {!!errors.password && <Text accessibilityRole="alert" style={s.error}>{errors.password}</Text>}
                 {!!notice && <View style={s.notice}><Text accessibilityRole="alert" style={s.noticeText}>{notice}</Text><Pressable accessibilityRole="button" accessibilityLabel="Fechar aviso" style={s.dismiss} onPress={() => setNotice('')}><Icon name="close" size={16} /></Pressable></View>}
-                <Pressable accessibilityRole="button" accessibilityLabel="Entrar" accessibilityState={{ disabled: busy, busy }} disabled={busy} onPress={submit} style={({ pressed }) => [s.button, pressed && s.pressed, busy && s.disabled]}>
-                  {busy ? <ActivityIndicator color="white" accessibilityLabel="Entrando" /> : <><Text style={s.buttonText}>Entrar</Text><Icon name="arrow" color="white" size={21} /></>}
+                <Pressable accessibilityRole="button" accessibilityLabel={registering ? 'Cadastrar e entrar' : 'Entrar'} accessibilityState={{ disabled: busy, busy }} disabled={busy} onPress={submit} style={({ pressed }) => [s.button, pressed && s.pressed, busy && s.disabled]}>
+                  {busy ? <ActivityIndicator color="white" accessibilityLabel="Entrando" /> : <><Text style={s.buttonText}>{registering ? 'Cadastrar e entrar' : 'Entrar'}</Text><Icon name="arrow" color="white" size={21} /></>}
                 </Pressable>
-                <View style={s.signup}><Text style={s.signupText}>Sua primeira visita?</Text><Pressable accessibilityRole="button" disabled={busy} onPress={() => setNotice('O cadastro estará disponível em breve.')} hitSlop={8}><Text style={s.signupLink}>Criar uma conta</Text></Pressable></View>
+                <View style={s.signup}><Text style={s.signupText}>{registering ? 'Já tem cadastro?' : 'Sua primeira visita?'}</Text><Pressable accessibilityRole="button" disabled={busy} onPress={() => {
+                  if (!onRegister) { setNotice('O cadastro estará disponível em breve.'); return; }
+                  setRegistering(old => !old); setPassword(''); setErrors({}); setNotice(''); setVisible(false);
+                }} hitSlop={8}><Text style={s.signupLink}>{registering ? 'Voltar para entrar' : 'Criar uma conta'}</Text></Pressable></View>
               </View>
               <View style={s.footer}><View style={s.footerLine} /><Icon name="heart" size={13} color={colors.pink} /><Text style={s.footerText}>Feito de carinho, para vestir amor.</Text><View style={s.footerLine} /></View>
             </View>
@@ -113,6 +124,7 @@ const s = StyleSheet.create({
   subtitle: { color: colors.muted, fontSize: 12, lineHeight: 20, marginTop: 6, textAlign: 'center' },
   form: { borderTopWidth: 1, borderTopColor: colors.line, paddingTop: 23 },
   formTitle: { color: colors.ink, fontSize: 17, fontWeight: '600', marginBottom: 22 },
+  accountHint: { color: colors.muted, fontSize: 12, lineHeight: 18, marginBottom: 18 },
   label: { fontSize: 12, fontWeight: '600', color: colors.ink, marginBottom: 8 },
   inputBox: { flexDirection: 'row', alignItems: 'center', minHeight: 52, borderColor: colors.line, borderWidth: 1, backgroundColor: colors.paper, borderRadius: 12, paddingLeft: 15 },
   input: { flex: 1, minWidth: 0, height: 52, paddingLeft: 12, paddingRight: 12, color: colors.ink, fontSize: 14, ...Platform.select({ web: { outlineStyle: 'none' as any }, default: {} }) },
