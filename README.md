@@ -1,53 +1,73 @@
-# Ana’s Baby — aplicativo mobile
+# Ana’s Baby
 
-Primeira etapa do trabalho: **somente a tela de login**, em React Native + Expo + TypeScript, para Android e iOS. A prévia web serve para conferir a interface no computador.
+Aplicativo acadêmico de venda de roupas infantis, desenvolvido por Michel Santos Mury para a disciplina Programação para Dispositivos Móveis, do curso de Análise e Desenvolvimento de Sistemas, com orientação de Lucas Floriano.
 
-## O que está pronto
+**Projeto em desenvolvimento.** Produtos, tamanhos e preços são ilustrativos. O aplicativo encaminha uma intenção de compra ao WhatsApp; disponibilidade, frete, pagamento e confirmação são combinados com a loja.
 
-- Tela em português, com rosa suave, branco, lilás e detalhes em verde-água inspirados em https://www.anasbabyreborn.com.br/.
-- Ilustrações vetoriais originais de roupas infantis. Sem bonecas, fotos de bebês ou imagens externas.
-- E-mail e senha, exibição/ocultação da senha, validação e mensagens acessíveis.
-- Rolagem, área segura e tratamento do teclado para telas pequenas.
-- Estado de carregamento e prevenção de envio duplicado para a integração futura.
-- Testes automatizados do formulário e configuração TypeScript estrita.
+## Telas e requisitos
 
-**Esta etapa é de interface.** Nenhuma senha é salva ou enviada, nenhum usuário é autenticado. Entrar, criar conta e recuperar senha informam que o acesso estará disponível em breve. `LoginScreen` aceita uma função assíncrona `onLogin` para a futura integração.
+| Requisito | Implementação nesta etapa |
+| --- | --- |
+| Pelo menos três telas | Login/cadastro, home e detalhes do produto |
+| FlatList | Catálogo com duas colunas e filtros de categoria |
+| Recurso do celular | Abertura do WhatsApp por React Native Linking |
+| Proteção da senha | PBKDF2 HMAC SHA256 com salt por conta e 600 mil iterações |
+| Persistência local | Cadastro salvo com AsyncStorage, sem senha em texto puro |
+| Git | Branches por etapa e commits descritivos |
+| Três testes automatizados | CT01, CT02 e CT03, além dos sete testes anteriores |
 
 ## Executar
 
-Requer Node.js 22 ou superior e pnpm 11.25.0 (`npm install -g pnpm@11.25.0`).
+Use Node.js 24 LTS e pnpm 11.25.0.
 
 ```sh
-git clone -b feat/tela-login https://github.com/Huttas/Trabalho-Faculdade-programa-o-para-dispositivos-m-veis-em-android.git
-cd Trabalho-Faculdade-programa-o-para-dispositivos-m-veis-em-android
+git clone -b test/requisitos-relatorio https://github.com/MichelMury/Trabalho-Faculdade-Programacao-para-dispositivos-moveis-em-android.git
+cd Trabalho-Faculdade-Programacao-para-dispositivos-moveis-em-android
 pnpm install --frozen-lockfile
 pnpm start
 ```
 
-Abra o projeto com uma versão do Expo Go compatível com o SDK 58 no Android ou iPhone. Celular e computador precisam estar na mesma rede. No Windows, o iOS pode ser conferido em um iPhone físico; o simulador iOS exige macOS/Xcode.
+Abra em um Expo Go compatível com o SDK 58. Computador e celular devem estar na mesma rede. Para conferir no navegador, execute `pnpm web`.
+
+Na primeira visita, toque em **Criar uma conta**, informe e-mail e senha de 8 a 128 caracteres. Após cadastrar, a home abre. Use **Sair** para voltar e testar o login com o mesmo cadastro. A conta fica somente neste aparelho ou navegador; limpar os dados do aplicativo remove o cadastro. A sessão fica em memória, então fechar e abrir exige entrar novamente. A recuperação de senha ainda não está disponível.
+
+Na home, escolha uma roupa. Nos detalhes, selecione tamanho e quantidade e toque em **Comprar pelo WhatsApp**. O número configurado é `55 21 98967-0373`. A mensagem inclui peça, tamanho, quantidade, preço unitário e total das peças. A pessoa confirma o envio no WhatsApp. O frete não entra no total.
+
+## Como os dados são guardados
+
+O AsyncStorage guarda o cadastro local no formato `{ version, email, salt, hash, iterations }`. O salt é aleatório e o hash é derivado por PBKDF2. A senha digitada não é gravada. O catálogo de demonstração fica em `src/data/products.ts`; ele não é um estoque conectado a um banco de dados.
+
+Hash não é criptografia reversível. Esta implementação serve para demonstrar proteção de senhas e persistência local no trabalho acadêmico. Não há servidor, autenticação entre dispositivos ou proteção de dados de uma loja real. Para produção, seria necessário autenticar e autorizar no servidor, com transporte HTTPS. A proteção visual `secureTextEntry` apenas oculta o campo na tela.
+
+## Testes e evidências
 
 ```sh
-pnpm web           # prévia no navegador
-pnpm typecheck     # verificação de tipos
-pnpm test          # testes automatizados
-pnpm export:web    # compilação da prévia web
+pnpm typecheck
+pnpm test --ci --json --outputFile=resultado-testes.json
+node scripts/test-summary.cjs
+pnpm exec expo export --platform all --output-dir dist-ci
 ```
 
-## Organização
+Na aba **Actions**, abra **Testes automatizados** e uma execução da branch `test/requisitos-relatorio`. O **Summary** mostra a tabela de resultados. O passo **Executar testes** mostra a saída do Jest. O guia [docs/TESTES.md](docs/TESTES.md) explica os três casos e quais prints usar no relatório.
 
-- `App.tsx`: inicialização do aplicativo e área segura.
-- `src/screens/LoginScreen.tsx`: tela e comportamento do formulário.
-- `src/components/`: ícones e ilustração originais.
-- `src/theme.ts`: paleta e tipografia.
-- `__tests__/LoginScreen.test.tsx`: casos automatizados.
-- `docs/PROGRESSO.md`: histórico e próximas etapas do trabalho.
+Os testes não enviam mensagens. A compilação exporta bundles web, Android e iOS; não gera APK/IPA e não substitui teste em celular real.
 
-## Branches
+## Branches desta entrega
 
-Esta etapa fica em `feat/tela-login`. A `main` fica preservada até a revisão/integração. Para uma etapa posterior, primeiro use como base a versão mais recente aprovada e crie uma branch com o nome da funcionalidade, por exemplo `feat/autenticacao` ou `feat/cadastro`. Commits registram o progresso de cada etapa, sem sobrescrever as anteriores.
+- `feat/autenticacao-local`: cadastro, login local e proteção da senha.
+- `feat/home-catalogo-whatsapp`: home, detalhes e integração do pedido.
+- `test/requisitos-relatorio`: testes, automação e documentação; contém as etapas anteriores.
+
+As branches são sequenciais: a última reúne o trabalho desta entrega. A `main` permanece como estava, aguardando revisão. O histórico está em [docs/PROGRESSO.md](docs/PROGRESSO.md).
+
+## Ajustar para os produtos reais
+
+Edite nomes, preços em centavos, tamanhos e descrições em `src/data/products.ts`. As ilustrações são originais e representam apenas roupas. O número e a mensagem ficam em `src/services/whatsapp.ts`. Ao passar do catálogo de demonstração para produtos reais, atualize também os avisos de demonstração na home, na mensagem e nesta documentação.
 
 ## Referências técnicas
 
-- https://docs.expo.dev/
-- https://docs.expo.dev/versions/latest/sdk/svg/
-- https://callstack.github.io/react-native-testing-library/
+- [Expo Crypto](https://docs.expo.dev/versions/latest/sdk/crypto/)
+- [Noble Hashes](https://github.com/paulmillr/noble-hashes)
+- [React Native Linking](https://reactnative.dev/docs/linking)
+- [React Native FlatList](https://reactnative.dev/docs/flatlist)
+- [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)

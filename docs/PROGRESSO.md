@@ -1,5 +1,15 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `test/requisitos-relatorio`
+
+Três novos casos automatizados adicionados e sete anteriores preservados. Resultado local: 10 testes aprovados em 4 arquivos; TypeScript sem erros; exportação web, Android e iOS concluída. Os bundles nativos não são APK/IPA.
+
+Conferência manual na prévia web: cadastro, navegação, seleção de tamanho e quantidade, total de R$ 79,80 para duas peças de R$ 39,90 e novo login após recarregar a página. Inspeção visual da home e dos detalhes. A largura de 390 pixels não apresentou transbordamento horizontal na verificação do DOM. Sem teste em celular real e sem envio de mensagens.
+
+Workflow GitHub Actions e guia `docs/TESTES.md` acrescentados para consultar resultados e obter evidências do relatório. O resultado remoto deve ser conferido na execução correspondente; o registro acima se refere à validação local.
+
+O repositório também contém a branch anterior `feat/login-cadastro`, que foi preservada. Esta linha de trabalho parte da `main` e usa cadastro local conforme a preferência informada nesta etapa.
+
 ## 16/11/2026 — `feat/home-catalogo-whatsapp`
 
 - Login e cadastro conectados à home; sair retorna ao login e limpa a sessão em memória.
@@ -28,7 +38,7 @@ Escopo confirmado: criar somente a tela de login, mantendo o restante do aplicat
 
 Validação desta etapa: 7 testes automatizados aprovados, TypeScript sem erros, prévia web compilada e bundles Hermes exportados para Android e iOS. Revisão visual no navegador em 390 × 844 e 320 × 568, sem transbordamento horizontal. A exportação dos bundles não substitui gerar APK/IPA ou testar em dispositivos: Android e iOS físicos ainda não foram testados.
 
-## Requisitos da entrega completa — ainda pendentes
+## Requisitos registrados em 11/11/2026 — situação naquela data
 
 - [ ] Autenticação real com tratamento seguro das credenciais e transporte HTTPS.
 - [ ] Persistência de dados, se escolhida para o trabalho.

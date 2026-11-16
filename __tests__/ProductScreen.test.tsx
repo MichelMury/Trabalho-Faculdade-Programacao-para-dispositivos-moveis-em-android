@@ -1,0 +1,32 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { Linking } from 'react-native';
+import { ProductScreen } from '../src/screens/ProductScreen';
+import { products } from '../src/data/products';
+
+test('CT03 compra exige tamanho, calcula total e abre WhatsApp com pedido e trata falha', async () => {
+  const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
+  render(<ProductScreen product={products[0]} onBack={jest.fn()} />);
+  fireEvent.press(screen.getByRole('button', { name: 'Comprar pelo WhatsApp' }));
+  expect(screen.getByText('Escolha um tamanho antes de comprar.')).toBeTruthy();
+  expect(openURL).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: 'Diminuir quantidade' }).props.accessibilityState.disabled).toBe(true);
+  fireEvent.press(screen.getByRole('button', { name: 'Tamanho M' }));
+  fireEvent.press(screen.getByRole('button', { name: 'Aumentar quantidade' }));
+  expect(screen.getByTestId('order-total').props.children).toBe('R$ 79,80');
+  fireEvent.press(screen.getByRole('button', { name: 'Comprar pelo WhatsApp' }));
+  await waitFor(() => expect(openURL).toHaveBeenCalledTimes(1));
+  const url = openURL.mock.calls[0][0];
+  expect(url.startsWith('https://wa.me/5521989670373?text=')).toBe(true);
+  const message = decodeURIComponent(url.split('?text=')[1]);
+  expect(message).toContain('Peça: Body carinho rosa');
+  expect(message).toContain('Tamanho: M');
+  expect(message).toContain('Quantidade: 2');
+  expect(message).toContain('Valor unitário: R$ 39,90');
+  expect(message).toContain('Total das peças: R$ 79,80');
+  expect(message).toContain('Frete não incluído');
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Comprar pelo WhatsApp' }).props.accessibilityState.busy).toBe(false));
+  openURL.mockRejectedValueOnce(new Error('WhatsApp indisponível'));
+  fireEvent.press(screen.getByRole('button', { name: 'Comprar pelo WhatsApp' }));
+  expect(await screen.findByText('Não foi possível abrir o WhatsApp. Confira sua conexão e tente novamente.')).toBeTruthy();
+  openURL.mockRestore();
+});

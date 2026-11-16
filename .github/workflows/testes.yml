@@ -1,0 +1,33 @@
+name: Testes automatizados
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  testes:
+    name: Testes e compilacao
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verificar TypeScript
+        run: pnpm typecheck
+      - name: Executar testes
+        run: pnpm test --ci --json --outputFile=resultado-testes.json
+      - name: Resumo dos testes para o relatorio
+        if: always()
+        run: node scripts/test-summary.cjs
+      - name: Exportar bundles web Android e iOS
+        run: pnpm exec expo export --platform all --output-dir dist-ci
+      - name: Salvar resultado dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultado-testes
+          path: resultado-testes.json
