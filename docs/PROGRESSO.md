@@ -1,5 +1,13 @@
 # Progresso do trabalho
 
+## 16/11/2026 — `fix/login-expo-go`
+
+Após relato de carregamento contínuo no Expo Go, a inspeção da biblioteca @noble/hashes 2.0.1 mostrou que a função de yield usava apenas microtarefas. Atualização para 2.4.0, que libera o agendador de tarefas e permite que timers e renderização avancem durante o PBKDF2. Mantidos algoritmo, 600 mil iterações, salt e formato dos cadastros anteriores.
+
+Adicionado limite de 30 segundos para as operações de autenticação. Uma conclusão após o limite não abre a conta, e verificações de hash concorrentes são rejeitadas enquanto o cálculo anterior ainda termina. O limite não interrompe o cálculo criptográfico em andamento.
+
+Regressão incluída para verificar que timers executam durante o cálculo e novo CT04 para leitura local sem resposta. Validação local: 11 testes aprovados, TypeScript e exportação web/Android/iOS concluídos. Expo reiniciado com túnel e cache limpo. A confirmação de funcionamento no celular do aluno ainda depende de novo teste no aparelho; a compilação não substitui essa confirmação.
+
 ## 16/11/2026 — `test/requisitos-relatorio`
 
 Três novos casos automatizados adicionados e sete anteriores preservados. Resultado local: 10 testes aprovados em 4 arquivos; TypeScript sem erros; exportação web, Android e iOS concluída. Os bundles nativos não são APK/IPA.
